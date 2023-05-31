@@ -1,16 +1,32 @@
 # bikerace
 
-A new Flutter project.
 
-## Getting Started
+bike/running app features
 
-This project is a starting point for a Flutter application.
+warning when opening app
 
-A few resources to get you started if this is your first Flutter project:
+route search
+favourite routes
+leaderboard 
+ranked system
+profile achievements
+goals
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+give average times based on other routes done if not just average ability of the playerbase, show distance and inclines (low, moderate and high)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+after finishing give stats (top speed, avr speed, distance, time, best time on this route, (if ranked - runner/biker level, rating?, ))
+
+- casual
+         - app planned route 
+              - scenic, no roads, etc settings
+         -  no route just distance and time 
+              - allow them to create and share their own routes
+         - allow racing against their past self possibly when redoing a track
+
+- ranked (5 divisions?)
+        - app planned route only
+        - 1v1 mode
+            - opponents based on division
+            - route based on both players pick (take into account incline, rank/rating, distance)
+            - if there aren’t enough players use ai (don’t tell them thou hehe lose rating if loss gain if win)
+            - if offline probs not gonna work idk think of ideas
