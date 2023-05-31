@@ -4,7 +4,6 @@
 bike/running app features
 
 warning when opening app
-
 route search
 favourite routes
 leaderboard 
