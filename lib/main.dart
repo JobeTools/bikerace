@@ -1,7 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'DistanceCalculation.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,29 +31,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String long = "", lat = "", Distance = "";
-  void _incrementCounter() {}
-
-  _determinePosition() async {
-    final LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 1,
-    );
-    StreamSubscription<Position> positionStream =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
-            .listen((Position? position) {
-      long = position!.longitude.toString();
-      lat = position!.latitude.toString();
-      print(long);
-
-      setState(() {});
-    });
-    setState(() {});
-  }
-
   @override
   void initState() {
-    _determinePosition();
+    determinePosition();
+
     super.initState();
   }
 
@@ -70,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-              Text("Distance Travelled: $Distance",
+              Text("Distance Travelled: $distance",
                   style: TextStyle(fontSize: 20)),
               Text("Longitude: $long", style: TextStyle(fontSize: 20)),
               Text(
