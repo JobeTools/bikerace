@@ -36,8 +36,6 @@ class _MyHomePageState extends State<MyHomePage> {
   String Countdown = "";
   @override
   void initState() {
-    determinePosition();
-
     super.initState();
   }
 
