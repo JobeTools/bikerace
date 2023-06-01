@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
               Text(Countdown, style: TextStyle(fontSize: 70)),
               ElevatedButton(
-                child: Text('Go!'),
+                child: Text('Start Race'),
                 onPressed: () {
                   StartP();
                 },
