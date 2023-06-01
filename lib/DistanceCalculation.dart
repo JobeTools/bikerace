@@ -20,7 +20,6 @@ determinePosition() async {
     double distanceD = calculateDistance(_previousPosition.latitude,
         _previousPosition.longitude, position.latitude, position.longitude);
     FinalDistance = FinalDistance + distanceD;
-    print(FinalDistance);
   });
 }
 

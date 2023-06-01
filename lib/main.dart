@@ -1,3 +1,5 @@
+import 'dart:async';
+import "package:audioplayers/audioplayers.dart";
 import 'package:flutter/material.dart';
 import 'DistanceCalculation.dart';
 
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'YO ITYS YA BOIY'),
+      home: const MyHomePage(title: 'Testing'),
     );
   }
 }
@@ -31,11 +33,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String Countdown = "";
   @override
   void initState() {
     determinePosition();
 
     super.initState();
+  }
+
+  StartP() {
+    Timer(Duration(seconds: 1), () {
+      final player = AudioPlayer();
+      player.play(AssetSource('Cntdn.mp3'));
+      setState(() {
+        Countdown = "3";
+      });
+      Timer(Duration(seconds: 1), () {
+        setState(() {
+          Countdown = "2";
+        });
+        Timer(Duration(seconds: 1), () {
+          setState(() {
+            Countdown = "1";
+            Timer(Duration(seconds: 1), () {
+              setState(() {
+                Countdown = "GO!";
+                determinePosition();
+              });
+            });
+          });
+        });
+      });
+    });
   }
 
   @override
@@ -49,12 +78,12 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-              Text("Distance Travelled: $distance",
-                  style: TextStyle(fontSize: 20)),
-              Text("Longitude: $long", style: TextStyle(fontSize: 20)),
-              Text(
-                "Latitude: $lat",
-                style: TextStyle(fontSize: 20),
+              Text(Countdown, style: TextStyle(fontSize: 70)),
+              ElevatedButton(
+                child: Text('Go!'),
+                onPressed: () {
+                  StartP();
+                },
               ),
             ])));
   }
