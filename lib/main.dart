@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter De',
+      title: 'Race',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -56,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Timer(Duration(seconds: 1), () {
               setState(() {
                 Countdown = "GO!";
+                player.stop();
                 determinePosition();
               });
             });

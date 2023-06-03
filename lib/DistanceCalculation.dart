@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
+import 'package:collection/collection.dart';
 
 List<Position> Location = [];
+List<double> SpeedA = [];
 String long = "", lat = "", distance = "";
 determinePosition() async {
+  DateTime StartTime = DateTime.now();
   Position _previousPosition;
   double FinalDistance = 0;
   final LocationSettings locationSettings = const LocationSettings(
@@ -20,6 +23,10 @@ determinePosition() async {
     double distanceD = calculateDistance(_previousPosition.latitude,
         _previousPosition.longitude, position.latitude, position.longitude);
     FinalDistance = FinalDistance + distanceD;
+    double time = StartTime.difference(DateTime.now()).inSeconds * -1;
+    StartTime = DateTime.now();
+    double speed = distanceD / time;
+    print(speed);
   });
 }
 
