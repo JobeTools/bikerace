@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
-import 'package:collection/collection.dart';
 
 List<Position> Location = [];
 List<double> SpeedA = [];
@@ -14,6 +13,7 @@ determinePosition() async {
     accuracy: LocationAccuracy.high,
     distanceFilter: 1,
   );
+
   // ignore: unused_local_variable
   StreamSubscription<Position> positionStream =
       Geolocator.getPositionStream(locationSettings: locationSettings)
@@ -26,7 +26,8 @@ determinePosition() async {
     double time = StartTime.difference(DateTime.now()).inSeconds * -1;
     StartTime = DateTime.now();
     double speed = distanceD / time;
-    print(speed);
+    int Rspeed = speed.round();
+    print(Rspeed);
   });
 }
 
