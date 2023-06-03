@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, non_constant_identifier_names, prefer_const_declarations
+
 import 'dart:async';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
@@ -7,7 +9,7 @@ List<double> SpeedA = [];
 String long = "", lat = "", distance = "";
 determinePosition() async {
   DateTime StartTime = DateTime.now();
-  Position _previousPosition;
+  Position previousPosition;
   double FinalDistance = 0;
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
@@ -19,9 +21,9 @@ determinePosition() async {
       Geolocator.getPositionStream(locationSettings: locationSettings)
           .listen((Position? position) {
     Location.add(position!);
-    _previousPosition = Location.elementAt(Location.length - 2);
-    double distanceD = calculateDistance(_previousPosition.latitude,
-        _previousPosition.longitude, position.latitude, position.longitude);
+    previousPosition = Location.elementAt(Location.length - 2);
+    double distanceD = calculateDistance(previousPosition.latitude,
+        previousPosition.longitude, position.latitude, position.longitude);
     FinalDistance = FinalDistance + distanceD;
     double time = StartTime.difference(DateTime.now()).inSeconds * -1;
     StartTime = DateTime.now();
