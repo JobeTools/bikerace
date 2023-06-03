@@ -58,6 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Countdown = "GO!";
                 player.stop();
                 determinePosition();
+                TimeTaken();
               });
             });
           });

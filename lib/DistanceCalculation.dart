@@ -30,6 +30,10 @@ determinePosition() async {
   });
 }
 
+TimeTaken() {
+  DateTime InitalTime = DateTime.now();
+}
+
 double calculateDistance(lat1, lon1, lat2, lon2) {
   var p = 0.017453292519943295;
   var c = cos;
