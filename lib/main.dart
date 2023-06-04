@@ -2,8 +2,10 @@
 
 import 'dart:async';
 import "package:audioplayers/audioplayers.dart";
+import 'package:bikerace/location.dart';
 import 'package:flutter/material.dart';
 import 'DistanceCalculation.dart';
+import 'location.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,8 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
               setState(() {
                 Countdown = "GO!";
                 player.stop();
-                determinePosition();
-                TimeTaken();
+                //determinePosition();
+               // TimeTaken();
+               optimal();
+
               });
             });
           });

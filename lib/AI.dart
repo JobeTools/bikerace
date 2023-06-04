@@ -13,6 +13,7 @@ determinePositionAI() async {
   StreamSubscription<Position> positionStream =
       Geolocator.getPositionStream(locationSettings: locationSettings)
           .listen((Position? position) {
+            
 
    
     
