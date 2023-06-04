@@ -1,10 +1,8 @@
-// ignore_for_file: file_names, non_constant_identifier_names, prefer_const_declarations, 
+// ignore_for_file: file_names, non_constant_identifier_names, prefer_const_declarations,
 
 import 'dart:async';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
-//import 'package:location/location.dart';
-
 
 List<Position> Location = [];
 List<double> SpeedA = [];
@@ -27,14 +25,7 @@ determinePosition() async {
     double distanceD = calculateDistance(previousPosition.latitude,
         previousPosition.longitude, position.latitude, position.longitude);
     FinalDistance = FinalDistance + distanceD;
-    double time = StartTime.difference(DateTime.now()).inSeconds * -1;
-    StartTime = DateTime.now();
-    double speed = distanceD / time;
-    int Rspeed = speed.round();
-    print(Rspeed);
-   
-    
-    
+    int speed = position.speed.round();
   });
 }
 
