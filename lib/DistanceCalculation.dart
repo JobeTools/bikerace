@@ -1,8 +1,9 @@
-// ignore_for_file: file_names, non_constant_identifier_names, prefer_const_declarations
+// ignore_for_file: file_names, non_constant_identifier_names, prefer_const_declarations, 
 
 import 'dart:async';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
+
 
 List<Position> Location = [];
 List<double> SpeedA = [];
@@ -30,10 +31,14 @@ determinePosition() async {
     double speed = distanceD / time;
     int Rspeed = speed.round();
     print(Rspeed);
+   
+    
+    
   });
 }
 
 TimeTaken() {
+  // ignore: unused_local_variable
   DateTime InitalTime = DateTime.now();
 }
 
