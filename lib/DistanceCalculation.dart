@@ -6,13 +6,14 @@ import 'package:geolocator/geolocator.dart';
 
 List<Position> Location = [];
 List<double> SpeedA = [];
-String long = "", lat = "", distance = "";
+List<double> AltitudeA = [];
+String long = "", lat = "", distance = "", speedR = "";
 determinePosition() async {
-  DateTime StartTime = DateTime.now();
   Position previousPosition;
   double FinalDistance = 0;
+  double altimeter = 0;
   final LocationSettings locationSettings = const LocationSettings(
-    accuracy: LocationAccuracy.high,
+    accuracy: LocationAccuracy.best,
     distanceFilter: 1,
   );
 
@@ -21,11 +22,18 @@ determinePosition() async {
       Geolocator.getPositionStream(locationSettings: locationSettings)
           .listen((Position? position) {
     Location.add(position!);
+    AltitudeA.add(position.altitude);
+    double PAltitude = AltitudeA.elementAt(AltitudeA.length - 2);
+    double diff = position.altitude - PAltitude;
+    altimeter += diff;
     previousPosition = Location.elementAt(Location.length - 2);
     double distanceD = calculateDistance(previousPosition.latitude,
         previousPosition.longitude, position.latitude, position.longitude);
     FinalDistance = FinalDistance + distanceD;
     int speed = position.speed.round();
+    speedR = speed.toString();
+    print("Speed:"+ speedR);
+    print("Altitude Change: "+ position.altitude.toString());
   });
 }
 
