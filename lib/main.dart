@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'DistanceCalculation.dart';
+import "AI.dart";
 
 
 void main() {
@@ -59,8 +60,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ElevatedButton(
                 child: Text('Start Race'),
                 onPressed: () {
-                  determinePosition();
-                  TimeTaken();
+                 // determinePosition();
+                 // TimeTaken();
+                 BasicRacingComputer();
                   
                 },
               ),
