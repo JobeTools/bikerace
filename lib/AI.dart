@@ -19,19 +19,30 @@ BasicRacingComputer() async {
   double POWER2 = 0;
   double FSpeed = 5;
   double ratio = 0;
+  double AD = 0;
+  DateTime StartTime = DateTime.now();
 
   // ignore: unused_local_variable
   StreamSubscription<Position> positionStream =
       Geolocator.getPositionStream(locationSettings: locationSettings)
           .listen((Position? position) {
             Random random = new Random();
-            int randomNumber = random.nextInt(8) + 0; 
+            int randomNumber = random.nextInt(8) + 1; 
             gradient = randomNumber/100;
             POWER = g*gradient*SystemMass*FakeSpeed;
             POWER2 = g*0.005*SystemMass*FakeSpeed;
             ratio = POWER2/POWER;
             FSpeed = FakeSpeed - FakeSpeed*ratio;
+            double time = StartTime.difference(DateTime.now()).inSeconds * -1;
+            StartTime = DateTime.now();
+            double distance = FSpeed*time;
+            AD = AD + distance;
+            print("Distance between ticks: " + distance.toString());
+            print("Combined Distance: " + AD.toString());
             print(FSpeed);
+
+            
+
 
 
 
