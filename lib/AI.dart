@@ -37,22 +37,5 @@ BasicRacingComputer() async {
             StartTime = DateTime.now();
             double distance = FSpeed*time;
             AD = AD + distance;
-            print("Distance between ticks: " + distance.toString());
-            print("Combined Distance: " + AD.toString());
-            print(FSpeed);
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
         });
 }
