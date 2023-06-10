@@ -31,6 +31,7 @@ determinePosition() async {
         previousPosition.longitude, position.latitude, position.longitude);
     FinalDistance = FinalDistance + distanceD;
     int speed = position.speed.round();
+    double altitude = position.altitude;
     speedR = speed.toString();
     print("Speed:"+ speedR);
     print("Altitude Change: "+ position.altitude.toString());

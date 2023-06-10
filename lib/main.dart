@@ -1,7 +1,5 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors
 
-import 'dart:async';
-import "package:audioplayers/audioplayers.dart";
 import 'package:flutter/material.dart';
 import 'DistanceCalculation.dart';
 
@@ -44,34 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  StartP() {
-    Timer(Duration(seconds: 1), () {
-      final player = AudioPlayer();
-      player.play(AssetSource('Cntdn.mp3'));
-      setState(() {
-        Countdown = "3";
-      });
-      Timer(Duration(seconds: 1), () {
-        setState(() {
-          Countdown = "2";
-        });
-        Timer(Duration(seconds: 1), () {
-          setState(() {
-            Countdown = "1";
-            Timer(Duration(seconds: 1), () {
-              setState(() {
-                Countdown = "GO!";
-                player.stop();
-                determinePosition();
-                TimeTaken();
 
-              });
-            });
-          });
-        });
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ElevatedButton(
                 child: Text('Start Race'),
                 onPressed: () {
-                  StartP();
+                  determinePosition();
+                  TimeTaken();
+                  
                 },
               ),
             ])));
