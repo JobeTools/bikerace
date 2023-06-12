@@ -1,9 +1,9 @@
 // ignore_for_file: file_names, non_constant_identifier_names, prefer_const_declarations,
 
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
+import 'AI.dart';
 
 List<Position> Location = [];
 List<double> SpeedA = [];
@@ -12,11 +12,8 @@ String long = "", lat = "", distance = "", speedR = "";
 determinePosition() async {
   Position previousPosition;
   double FinalDistance = 0;
-  double gradient = 0;
-  double altimeter = 0;
-  double changeinY = 0;
-  double changeinX = 0;
-  
+  double altimeter = 0; //bruh its legit used
+
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.best,
     distanceFilter: 1,
@@ -34,19 +31,19 @@ determinePosition() async {
     previousPosition = Location.elementAt(Location.length - 2);
     double distanceD = calculateDistance(previousPosition.latitude,
         previousPosition.longitude, position.latitude, position.longitude);
-    
+
     FinalDistance = FinalDistance + distanceD;
     int speed = position.speed.round();
     double altitude = position.altitude;
-    double Pdistance = FinalDistance-distanceD;
+    double Pdistance = FinalDistance - distanceD;
+    double gradientF = Calcgradient(Pdistance, distanceD, PAltitude, altitude);
     speedR = speed.toString();
-    print("Speed:"+ speedR);
-    print("Altitude Change: "+ position.altitude.toString());
-    double gradientF = Calcgradient(Pdistance,distanceD, PAltitude, altitude);
-    
-
-    
-    
+    print("Speed:" + speedR);
+    print("Current Distance: " + position.altitude.toString());
+    print("Current Gradient: " + gradientF.toString());
+    print("AI Speed: " + FSpeed.toString());
+    print("AI Distance: " + AD.toString());
+    print("AI Gradient: " + gradient.toString());
   });
 }
 
@@ -64,12 +61,12 @@ double calculateDistance(lat1, lon1, lat2, lon2) {
   return 1000 * 12742 * asin(sqrt(a));
 }
 
-double Calcgradient(x1, x2, y1, y2){
+double Calcgradient(x1, x2, y1, y2) {
   double y = 0;
-  double x=0;
+  double x = 0;
   double G = 0;
-  y = y2-y1;
-  x = x2-x1;
-  G = y/x;
+  y = y2 - y1;
+  x = x2 - x1;
+  G = y / x;
   return G;
 }

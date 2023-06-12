@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'DistanceCalculation.dart';
 import "AI.dart";
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -34,16 +33,12 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-
-
 class _MyHomePageState extends State<MyHomePage> {
   String Countdown = "";
   @override
   void initState() {
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +55,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ElevatedButton(
                 child: Text('Start Race'),
                 onPressed: () {
-                 // determinePosition();
-                 // TimeTaken();
-                 BasicRacingComputer();
-                  
+                  // determinePosition();
+                  // TimeTaken();
+                  BasicRacingComputer();
+                  determinePosition();
                 },
               ),
             ])));
