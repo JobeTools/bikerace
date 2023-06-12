@@ -39,11 +39,17 @@ determinePosition() async {
     double gradientF = Calcgradient(Pdistance, distanceD, PAltitude, altitude);
     speedR = speed.toString();
     print("Speed:" + speedR);
-    print("Current Distance: " + position.altitude.toString());
+    print("Current Distance: " + FinalDistance.toString());
     print("Current Gradient: " + gradientF.toString());
     print("AI Speed: " + FSpeed.toString());
     print("AI Distance: " + AD.toString());
     print("AI Gradient: " + gradient.toString());
+    if (FinalDistance > AD) {
+      print("Human Is Winning");
+    } else {
+      print(
+          "Ai is winning"); //Will turn this into a points based system in the future but for now this will do.
+    }
   });
 }
 
