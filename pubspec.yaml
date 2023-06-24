@@ -38,6 +38,7 @@ dependencies:
   ionicons: ^0.2.1
   google_fonts: ^5.1.0
   email_validator: "^2.1.17"
+  google_maps_flutter: ^2.0.2
 
 dev_dependencies:
   flutter_test:

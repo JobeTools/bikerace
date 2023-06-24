@@ -2,6 +2,7 @@ import 'package:bikerace/calculations/AI.dart';
 import 'package:bikerace/calculations/DistanceCalculation.dart';
 import 'package:bikerace/pages/welcome/welcome_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -27,6 +28,13 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           const Spacer(),
+          Container(
+            height: MediaQuery.of(context).size.height - 215,
+            width: MediaQuery.of(context).size.width,
+            child: GoogleMap(
+                initialCameraPosition:
+                    CameraPosition(target: LatLng(10, 10), zoom: 10)),
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 16),
             child: ElevatedButton(
