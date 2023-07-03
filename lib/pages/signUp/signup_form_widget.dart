@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:bikerace/authentication/Auth.dart';
+import 'package:bikerace/pages/homePage/home_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -37,13 +41,76 @@ class _SignUpFormState extends State<SignUpForm> {
       return;
     }
 
-    // TODO: Perform form submission logic
+    // Simulate form submission
+    bool isSuccessful = _performFormSubmission();
+
+    // Show success/error message and redirect after 1 second
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(isSuccessful ? 'Sign up successful' : 'Sign up failed'),
+      backgroundColor: isSuccessful ? Colors.green : Colors.red,
+    ));
+
+    Timer(Duration(seconds: 1), () {
+      if (isSuccessful) {
+        // If form submission is successful, update isAuthenticated to true
+        Auth.isAuthenticated = true;
+        // Redirect to the desired page after successful sign-up
+        // Replace the placeholder code with the appropriate page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      }
+    });
+  }
+
+  bool _performFormSubmission() {
+    // TODO: Implement sign-up logic here
+    // You can create a new user account and store the user's information
+    // Return true if the sign-up is successful, false otherwise.
+
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    // Perform validation and sign-up logic based on your requirements
+    // For example, you can check if the username or email already exists
+    // or if the password meets the required criteria.
+
+    // Replace this logic with your own sign-up logic
+    if (username.isNotEmpty && email.isNotEmpty && password.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void _togglePasswordVisibility() {
     setState(() {
       _isPasswordVisible = !_isPasswordVisible;
     });
+  }
+
+  void _handleSignUp() {
+    // TODO: Implement the logic for the sign-up process
+    // You can show a sign-up dialog or navigate to a sign-up page
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sign Up'),
+          content: Text('Create a new account'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

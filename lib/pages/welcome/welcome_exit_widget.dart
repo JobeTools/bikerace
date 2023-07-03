@@ -6,11 +6,10 @@ Row WelcomeExit(BuildContext context) {
     children: [
       ElevatedButton(
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(),
-            ),
+            MaterialPageRoute(builder: (context) => HomePage()),
+            (route) => false, // Remove all previous routes from the stack
           );
         },
         style: ElevatedButton.styleFrom(

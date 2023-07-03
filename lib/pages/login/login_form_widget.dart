@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'package:bikerace/authentication/Auth.dart';
+import 'package:bikerace/pages/homePage/home_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -34,13 +37,77 @@ class _LoginFormState extends State<LoginForm> {
       return;
     }
 
-    // TODO: Perform form submission logic
+    // Simulate form submission
+    bool isSuccessful = _performFormSubmission();
+
+    // Show success/error message and redirect after 1 second
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content:
+          Text(isSuccessful ? 'Successful' : 'Password or email is incorrect'),
+      backgroundColor: isSuccessful ? Colors.green : Colors.red,
+    ));
+
+    Timer(Duration(seconds: 1), () {
+      if (isSuccessful) {
+        // If form submission is successful, update isAuthenticated to true
+        Auth.isAuthenticated = true;
+
+        // Redirect to the home page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      }
+    });
+  }
+
+  bool _performFormSubmission() {
+    // TODO: Implement form submission logic here
+    // You can check the entered email and password,
+    // interact with APIs or databases, etc.
+    // Return true if the submission is successful, false otherwise.
+
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    // Perform validation logic based on your requirements
+    // For example, you can compare the entered email and password
+    // with a pre-defined email and password combination.
+
+    // Replace this logic with your own validation
+    if (email == 'example@gmail.com' && password == 'password') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void _togglePasswordVisibility() {
     setState(() {
       _isPasswordVisible = !_isPasswordVisible;
     });
+  }
+
+  void _handleForgotPassword() {
+    // TODO: Implement the logic for the "Forgot Password?" button
+    //show forgot password page.
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Forgot Password'),
+          content: Text('Please contact support for password recovery.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -67,7 +134,7 @@ class _LoginFormState extends State<LoginForm> {
               Align(
                 alignment: Alignment.center,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: _handleForgotPassword,
                   child: Text(
                     "Forgot Password?",
                     style: TextStyle(
