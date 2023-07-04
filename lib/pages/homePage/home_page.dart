@@ -1,7 +1,13 @@
 import 'dart:ui';
+import 'package:bikerace/global%20widgets/navbar_widget.dart';
+import 'package:bikerace/pages/popup_menu_pages/Help_page/Help_page.dart';
+import 'package:bikerace/pages/popup_menu_pages/Leaderboard_page/Leaderboard_page.dart';
+import 'package:bikerace/pages/popup_menu_pages/RaceLog_Page/RaceLog_page.dart';
+import 'package:bikerace/pages/popup_menu_pages/Settings_Page/Settings_page.dart';
 import 'package:bikerace/pages/solo_page/solo_page.dart';
 import 'package:bikerace/pages/welcome/welcome_page.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import '../../authentication/Auth.dart';
 
 class HomePage extends StatefulWidget {
@@ -64,12 +70,50 @@ class _HomePageState extends State<HomePage> {
                       onSelected: (value) {
                         if (value == 'Race Log') {
                           // Handle Race Log menu item
+                          if (Auth.isAuthenticated) {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: RaceLogPage(),
+                              ),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: const WelcomePage(),
+                              ),
+                            );
+                          }
                         } else if (value == 'Leaderboard') {
                           // Handle Leaderboard menu item
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.fade,
+                              child: LeaderboardPage(),
+                            ),
+                          );
                         } else if (value == 'Settings') {
                           // Handle Settings menu item
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.fade,
+                              child: SettingsPage(),
+                            ),
+                          );
                         } else if (value == 'Help') {
                           // Handle Help menu item
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.fade,
+                              child: HelpPage(),
+                            ),
+                          );
                         }
                       },
                       itemBuilder: (BuildContext context) => [
@@ -78,12 +122,19 @@ class _HomePageState extends State<HomePage> {
                           Icons.list_alt,
                           () {
                             if (Auth.isAuthenticated) {
-                              // Handle Race Log menu item
-                            } else {
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => const WelcomePage(),
+                                PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: RaceLogPage(),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: const WelcomePage(),
                                 ),
                               );
                             }
@@ -93,21 +144,39 @@ class _HomePageState extends State<HomePage> {
                           'Leaderboard',
                           Icons.leaderboard,
                           () {
-                            // Handle Leaderboard menu item
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: LeaderboardPage(),
+                              ),
+                            );
                           },
                         ),
                         buildPopupMenuItem(
                           'Settings',
                           Icons.settings,
                           () {
-                            // Handle Settings menu item
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: SettingsPage(),
+                              ),
+                            );
                           },
                         ),
                         buildPopupMenuItem(
                           'Help',
                           Icons.help,
                           () {
-                            // Handle Help menu item
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: HelpPage(),
+                              ),
+                            );
                           },
                         ),
                         buildPopupMenuItem(
@@ -118,10 +187,11 @@ class _HomePageState extends State<HomePage> {
                             if (Auth.isAuthenticated) {
                               // Handle Race Log menu item
                             } else {
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => const WelcomePage(),
+                                PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: const WelcomePage(),
                                 ),
                               );
                             }
@@ -197,11 +267,14 @@ class _HomePageState extends State<HomePage> {
                         margin: EdgeInsets.symmetric(horizontal: 16),
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pushReplacement(
+                            Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => SoloRacePage(),
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: SoloRacePage(),
                               ),
+                              (route) =>
+                                  false, // Remove all previous routes from the stack
                             );
                           },
                           child: Text(
@@ -229,10 +302,11 @@ class _HomePageState extends State<HomePage> {
                             if (Auth.isAuthenticated) {
                               // Handle authenticated action
                             } else {
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => const WelcomePage(),
+                                PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: const WelcomePage(),
                                 ),
                               );
                             }
@@ -258,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(height: 60),
-              Navbar(context, 2),
+              NavbarWidget(activeIndex: 2),
             ],
           ),
         ],
@@ -286,90 +360,6 @@ class _HomePageState extends State<HomePage> {
         ),
         onTap: onTap,
       ),
-    );
-  }
-
-  Container Navbar(BuildContext context, int activeIndex) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Container(
-        height: 60,
-        color: Colors.white,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            buildNavbarIconButton(
-              Icons.list_alt,
-              activeIndex == 0,
-              () {
-                // Navigate to "Race Log" page
-              },
-            ),
-            buildNavbarIconButton(
-              Icons.leaderboard,
-              activeIndex == 1,
-              () {
-                // Navigate to "Leaderboard" page
-              },
-            ),
-            buildNavbarIconButton(
-              Icons.settings,
-              activeIndex == 2,
-              () {
-                // Navigate to "Settings" page
-              },
-            ),
-            buildNavbarIconButton(
-              Icons.help,
-              activeIndex == 3,
-              () {
-                // Navigate to "Help" page
-              },
-            ),
-            buildNavbarIconButton(
-              Icons.person,
-              activeIndex == 4,
-              () {
-                // Handle Account icon tap
-                if (Auth.isAuthenticated) {
-                  // Handle authenticated action
-                } else {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const WelcomePage(),
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  IconButton buildNavbarIconButton(
-    IconData icon,
-    bool isActive,
-    void Function() onPressed,
-  ) {
-    return IconButton(
-      icon: Icon(
-        icon,
-        size: isActive ? 28 : 24,
-        color: isActive ? Colors.black : Colors.black.withOpacity(0.6),
-      ),
-      onPressed: onPressed,
     );
   }
 }

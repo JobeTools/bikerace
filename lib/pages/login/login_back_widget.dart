@@ -1,5 +1,6 @@
 import 'package:bikerace/pages/welcome/welcome_page.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 Row loginBack(BuildContext context) {
   return Row(
@@ -8,8 +9,9 @@ Row loginBack(BuildContext context) {
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (context) => const WelcomePage(),
+            PageTransition(
+              type: PageTransitionType.fade, // Apply fade transition
+              child: const WelcomePage(),
             ),
           );
         },

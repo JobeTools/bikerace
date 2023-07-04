@@ -1,5 +1,6 @@
 import 'package:bikerace/pages/homePage/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 Row WelcomeExit(BuildContext context) {
   return Row(
@@ -8,7 +9,10 @@ Row WelcomeExit(BuildContext context) {
         onPressed: () {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomePage()),
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: HomePage(),
+            ),
             (route) => false, // Remove all previous routes from the stack
           );
         },

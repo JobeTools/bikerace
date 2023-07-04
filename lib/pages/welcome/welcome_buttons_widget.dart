@@ -1,6 +1,7 @@
 import 'package:bikerace/pages/login/login_page.dart';
 import 'package:bikerace/pages/signUp/signup_page.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 Column WelcomeButtons(BuildContext context) {
   return Column(
@@ -11,8 +12,9 @@ Column WelcomeButtons(BuildContext context) {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(
-                builder: (context) => const SignUp(),
+              PageTransition(
+                type: PageTransitionType.fade, // Apply fade transition
+                child: const SignUp(),
               ),
             );
           },
@@ -43,8 +45,9 @@ Column WelcomeButtons(BuildContext context) {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(
-                builder: (context) => const LoginPage(),
+              PageTransition(
+                type: PageTransitionType.fade, // Apply fade transition
+                child: const LoginPage(),
               ),
             );
           },
