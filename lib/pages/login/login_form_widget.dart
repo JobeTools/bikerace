@@ -19,6 +19,8 @@ class _LoginFormState extends State<LoginForm> {
   bool _isEmailFieldFocused = false;
   bool _isPasswordFieldFocused = false;
   bool _isFormSubmitted = false;
+  bool _isLoading = false;
+  String _errorMessage = '';
 
   @override
   void dispose() {
@@ -27,9 +29,10 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void _saveForm() {
+  void _saveForm() async {
     setState(() {
       _isFormSubmitted = true;
+      _errorMessage = '';
     });
 
     final isValid = _formKey.currentState!.validate();
@@ -37,44 +40,40 @@ class _LoginFormState extends State<LoginForm> {
       return;
     }
 
-    // Simulate form submission
-    bool isSuccessful = _performFormSubmission();
-
-    // Show success/error message and redirect after 1 second
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content:
-          Text(isSuccessful ? 'Successful' : 'Password or email is incorrect'),
-      backgroundColor: isSuccessful ? Colors.green : Colors.red,
-    ));
-
-    Timer(Duration(seconds: 1), () {
-      if (isSuccessful) {
-        // If form submission is successful, update isAuthenticated to true
-        Auth.isAuthenticated = true;
-
-        // Redirect to the home page
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      }
+    setState(() {
+      _isLoading = true;
     });
+
+    bool isSuccessful = await _performFormSubmission();
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (isSuccessful) {
+      Auth.isAuthenticated = true;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } else {
+      setState(() {
+        _errorMessage = 'Email or password is incorrect';
+      });
+    }
   }
 
-  bool _performFormSubmission() {
-    // TODO: Implement form submission logic here
-    // You can check the entered email and password,
-    // interact with APIs or databases, etc.
-    // Return true if the submission is successful, false otherwise.
-
+  Future<bool> _performFormSubmission() async {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    // Perform validation logic based on your requirements
-    // For example, you can compare the entered email and password
-    // with a pre-defined email and password combination.
+    // Simulate asynchronous form submission
+    await Future.delayed(Duration(seconds: 2));
 
-    // Replace this logic with your own validation
+    // Implement actual form submission logic here, such as validating against a database or API
+    // Replace the following logic with your own validation and authentication implementation
+
+    // Simulate authentication
     if (email == 'example@gmail.com' && password == 'password') {
       return true;
     } else {
@@ -89,14 +88,12 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _handleForgotPassword() {
-    // TODO: Implement the logic for the "Forgot Password?" button
-    //show forgot password page.
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Forgot Password'),
-          content: Text('Please contact support for password recovery.'),
+          content: Text('An email has been sent to the account holder'),
           actions: [
             TextButton(
               onPressed: () {
@@ -146,14 +143,16 @@ class _LoginFormState extends State<LoginForm> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _saveForm,
-                  child: Text(
-                    "Log In",
-                    style: TextStyle(
-                      fontSize: buttonFontSize,
-                      color: Colors.black,
-                    ),
-                  ),
+                  onPressed: _isLoading ? null : _saveForm,
+                  child: _isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                          "Log In",
+                          style: TextStyle(
+                            fontSize: buttonFontSize,
+                            color: Colors.black,
+                          ),
+                        ),
                   style: ElevatedButton.styleFrom(
                     shape: StadiumBorder(),
                     backgroundColor: Colors.white,
@@ -165,6 +164,12 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
               ),
+              if (_errorMessage.isNotEmpty) SizedBox(height: fieldHeight),
+              if (_errorMessage.isNotEmpty)
+                Text(
+                  _errorMessage,
+                  style: TextStyle(color: Colors.red),
+                ),
             ],
           ),
         ),
@@ -197,7 +202,7 @@ class _LoginFormState extends State<LoginForm> {
         errorText: errorText,
         errorStyle: TextStyle(color: Colors.red),
       ),
-      style: TextStyle(color: Colors.white), // Set text color to white
+      style: TextStyle(color: Colors.white),
       onChanged: (_) {
         setState(() {
           _isEmailFieldFocused = true;
@@ -209,15 +214,7 @@ class _LoginFormState extends State<LoginForm> {
           _isPasswordFieldFocused = false;
         });
       },
-      validator: (_) {
-        if (_emailController.text.isEmpty) {
-          return "Please enter your email";
-        }
-        if (!EmailValidator.validate(_emailController.text)) {
-          return "Please enter a valid email";
-        }
-        return null;
-      },
+      validator: (_) => FormValidator.validateEmail(_emailController.text),
     );
   }
 
@@ -256,7 +253,7 @@ class _LoginFormState extends State<LoginForm> {
         errorText: errorText,
         errorStyle: TextStyle(color: Colors.red),
       ),
-      style: TextStyle(color: Colors.white), // Set text color to white
+      style: TextStyle(color: Colors.white),
       onChanged: (_) {
         setState(() {
           _isPasswordFieldFocused = true;
@@ -268,12 +265,27 @@ class _LoginFormState extends State<LoginForm> {
           _isPasswordFieldFocused = true;
         });
       },
-      validator: (_) {
-        if (_passwordController.text.isEmpty) {
-          return "Please enter your password";
-        }
-        return null;
-      },
+      validator: (_) =>
+          FormValidator.validatePassword(_passwordController.text),
     );
+  }
+}
+
+class FormValidator {
+  static String? validateEmail(String value) {
+    if (value.isEmpty) {
+      return "Please enter your email";
+    }
+    if (!EmailValidator.validate(value)) {
+      return "Please enter a valid email";
+    }
+    return null;
+  }
+
+  static String? validatePassword(String value) {
+    if (value.isEmpty) {
+      return "Please enter your password";
+    }
+    return null;
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bikerace/authentication/Auth.dart';
 import 'package:bikerace/pages/homePage/home_page.dart';
 import 'package:email_validator/email_validator.dart';
@@ -22,6 +21,8 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _isUsernameFieldFocused = false;
   bool _isPasswordFieldFocused = false;
   bool _isFormSubmitted = false;
+  bool _isLoading = false;
+  String _errorMessage = '';
 
   @override
   void dispose() {
@@ -35,40 +36,50 @@ class _SignUpFormState extends State<SignUpForm> {
     setState(() {
       _isFormSubmitted = true;
     });
-
     final isValid = _formKey.currentState!.validate();
     if (!isValid) {
       return;
     }
-
-    // Simulate form submission
-    bool isSuccessful = _performFormSubmission();
-
-    // Show success/error message and redirect after 1 second
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(isSuccessful ? 'Sign up successful' : 'Sign up failed'),
-      backgroundColor: isSuccessful ? Colors.green : Colors.red,
-    ));
-
-    Timer(Duration(seconds: 1), () {
-      if (isSuccessful) {
-        // If form submission is successful, update isAuthenticated to true
-        Auth.isAuthenticated = true;
-        // Redirect to the desired page after successful sign-up
-        // Replace the placeholder code with the appropriate page
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      }
-    });
+    _submitForm();
   }
 
-  bool _performFormSubmission() {
+  Future<void> _submitForm() async {
+    setState(() {
+      _isLoading = true;
+    });
+    // Simulate form submission
+    bool isSuccessful = await _performFormSubmission();
+    setState(() {
+      _isLoading = false;
+    });
+    // Show success/error message and redirect after 1 second
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(isSuccessful ? 'Sign up successful' : 'Sign up failed'),
+        backgroundColor: isSuccessful ? Colors.green : Colors.red,
+      ),
+    );
+    if (isSuccessful) {
+      // If form submission is successful, update isAuthenticated to true
+      Auth.isAuthenticated = true;
+      // Redirect to the desired page after successful sign-up
+      // Replace the placeholder code with the appropriate page
+      Timer(
+        Duration(seconds: 1),
+        () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        },
+      );
+    }
+  }
+
+  Future<bool> _performFormSubmission() async {
     // TODO: Implement sign-up logic here
     // You can create a new user account and store the user's information
     // Return true if the sign-up is successful, false otherwise.
-
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
@@ -76,9 +87,11 @@ class _SignUpFormState extends State<SignUpForm> {
     // Perform validation and sign-up logic based on your requirements
     // For example, you can check if the username or email already exists
     // or if the password meets the required criteria.
-
     // Replace this logic with your own sign-up logic
+
     if (username.isNotEmpty && email.isNotEmpty && password.isNotEmpty) {
+      // Simulate a delay to show the loading indicator
+      await Future.delayed(Duration(seconds: 2));
       return true;
     } else {
       return false;
@@ -89,28 +102,6 @@ class _SignUpFormState extends State<SignUpForm> {
     setState(() {
       _isPasswordVisible = !_isPasswordVisible;
     });
-  }
-
-  void _handleSignUp() {
-    // TODO: Implement the logic for the sign-up process
-    // You can show a sign-up dialog or navigate to a sign-up page
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Sign Up'),
-          content: Text('Create a new account'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -130,24 +121,49 @@ class _SignUpFormState extends State<SignUpForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildUsernameField(),
+              _buildFormField(
+                controller: _usernameController,
+                labelText: 'Username',
+                fieldColor:
+                    _isUsernameFieldFocused ? Colors.white : Colors.black,
+                isPasswordField: false,
+                isEmailField: false,
+                validator: validateUsername,
+              ),
               SizedBox(height: fieldHeight),
-              _buildEmailField(),
+              _buildFormField(
+                controller: _emailController,
+                labelText: 'Email',
+                fieldColor: _isEmailFieldFocused ? Colors.white : Colors.black,
+                isPasswordField: false,
+                isEmailField: true,
+                validator: validateEmail,
+              ),
               SizedBox(height: fieldHeight),
-              _buildPasswordField(),
+              _buildFormField(
+                controller: _passwordController,
+                labelText: 'Password',
+                fieldColor:
+                    _isPasswordFieldFocused ? Colors.white : Colors.black,
+                isPasswordField: true,
+                isEmailField: false,
+                validator: validatePassword,
+              ),
               SizedBox(height: fieldHeight),
               SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _saveForm,
-                  child: Text(
-                    "Sign Up",
-                    style: TextStyle(
-                      fontSize: buttonFontSize,
-                      color: Colors.black, // Set text color to white
-                    ),
-                  ),
+                  onPressed: _isLoading ? null : _saveForm,
+                  child: _isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                          "Sign Up",
+                          style: TextStyle(
+                            fontSize: buttonFontSize,
+                            color: Colors.black, // Set text color to white
+                          ),
+                        ),
                   style: ElevatedButton.styleFrom(
                     shape: StadiumBorder(),
                     backgroundColor:
@@ -160,6 +176,14 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                 ),
               ),
+              if (_errorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    _errorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
             ],
           ),
         ),
@@ -167,178 +191,104 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  Widget _buildUsernameField() {
-    final Color fieldColor =
-        _isUsernameFieldFocused ? Colors.white : Colors.black;
+  Widget _buildFormField({
+    required TextEditingController controller,
+    required String labelText,
+    required Color fieldColor,
+    required bool isPasswordField,
+    required bool isEmailField,
+    required String? Function(String?) validator,
+  }) {
     final UnderlineInputBorder focusedBorder = UnderlineInputBorder(
       borderSide: BorderSide(color: fieldColor),
     );
+
     final UnderlineInputBorder enabledBorder = UnderlineInputBorder(
       borderSide: BorderSide(color: fieldColor),
     );
+
     final String? errorText =
-        _isFormSubmitted && _usernameController.text.isEmpty
-            ? "Please enter your username"
-            : _isFormSubmitted && _usernameController.text.length > 15
-                ? "Username must be 15 characters or less"
-                : null;
+        _isFormSubmitted ? validator(controller.text) : null;
 
-    return TextFormField(
-      controller: _usernameController,
-      decoration: InputDecoration(
-        border: UnderlineInputBorder(),
-        labelText: 'Username',
-        labelStyle: TextStyle(color: fieldColor),
-        focusedBorder: focusedBorder,
-        enabledBorder: enabledBorder,
-        errorText: errorText,
-        errorStyle: TextStyle(color: Colors.red),
-      ),
-      style: TextStyle(color: Colors.white), // Set text color to white
-      onChanged: (_) {
-        setState(() {
-          _isUsernameFieldFocused = true;
-          _isEmailFieldFocused = false;
-          _isPasswordFieldFocused = false;
-        });
-      },
-      onTap: () {
-        setState(() {
-          _isUsernameFieldFocused = true;
-          _isEmailFieldFocused = false;
-          _isPasswordFieldFocused = false;
-        });
-      },
-      validator: (_) {
-        if (_usernameController.text.isEmpty) {
-          return "Please enter your username";
-        }
-        if (_usernameController.text.length > 15) {
-          return "Username must be 15 characters or less";
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildEmailField() {
-    final Color fieldColor = _isEmailFieldFocused ? Colors.white : Colors.black;
-    final UnderlineInputBorder focusedBorder = UnderlineInputBorder(
-      borderSide: BorderSide(color: fieldColor),
-    );
-    final UnderlineInputBorder enabledBorder = UnderlineInputBorder(
-      borderSide: BorderSide(color: fieldColor),
-    );
-    final String? errorText = _isFormSubmitted &&
-            _emailController.text.isNotEmpty &&
-            !EmailValidator.validate(_emailController.text)
-        ? "Please enter a valid email"
-        : null;
-
-    return TextFormField(
-      controller: _emailController,
-      decoration: InputDecoration(
-        border: UnderlineInputBorder(),
-        labelText: 'Email',
-        labelStyle: TextStyle(color: fieldColor),
-        focusedBorder: focusedBorder,
-        enabledBorder: enabledBorder,
-        errorText: errorText,
-        errorStyle: TextStyle(color: Colors.red),
-      ),
-      style: TextStyle(color: Colors.white), // Set text color to white
-      onChanged: (_) {
-        setState(() {
-          _isEmailFieldFocused = true;
-          _isUsernameFieldFocused = false;
-          _isPasswordFieldFocused = false;
-        });
-      },
-      onTap: () {
-        setState(() {
-          _isEmailFieldFocused = true;
-          _isUsernameFieldFocused = false;
-          _isPasswordFieldFocused = false;
-        });
-      },
-      validator: (_) {
-        if (_emailController.text.isEmpty) {
-          return "Please enter your email";
-        }
-        if (!EmailValidator.validate(_emailController.text)) {
-          return "Please enter a valid email";
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildPasswordField() {
-    final Color fieldColor =
-        _isPasswordFieldFocused ? Colors.white : Colors.black;
-    final UnderlineInputBorder focusedBorder = UnderlineInputBorder(
-      borderSide: BorderSide(color: fieldColor),
-    );
-    final UnderlineInputBorder enabledBorder = UnderlineInputBorder(
-      borderSide: BorderSide(color: fieldColor),
-    );
-    final String? errorText =
-        _isFormSubmitted && _passwordController.text.isEmpty
-            ? "Please enter your password"
-            : _isFormSubmitted && _passwordController.text.length < 6
-                ? "Password must be at least 6 characters"
-                : _isFormSubmitted && _passwordController.text.length > 20
-                    ? "Password must be 20 characters or less"
-                    : null;
-
-    return TextFormField(
-      controller: _passwordController,
-      obscureText: !_isPasswordVisible,
-      enableSuggestions: false,
-      autocorrect: false,
-      decoration: InputDecoration(
-        border: UnderlineInputBorder(),
-        labelText: 'Password',
-        labelStyle: TextStyle(color: fieldColor),
-        focusedBorder: focusedBorder,
-        enabledBorder: enabledBorder,
-        suffixIcon: IconButton(
-          onPressed: _togglePasswordVisibility,
-          icon: Icon(
-            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-            color: fieldColor,
-          ),
+    return Semantics(
+      label: labelText,
+      child: TextFormField(
+        controller: controller,
+        obscureText: isPasswordField && !_isPasswordVisible,
+        enableSuggestions: !isPasswordField,
+        autocorrect: !isPasswordField,
+        keyboardType:
+            isEmailField ? TextInputType.emailAddress : TextInputType.text,
+        decoration: InputDecoration(
+          border: UnderlineInputBorder(),
+          labelText: labelText,
+          labelStyle: TextStyle(color: fieldColor),
+          focusedBorder: focusedBorder,
+          enabledBorder: enabledBorder,
+          suffixIcon: isPasswordField
+              ? IconButton(
+                  onPressed: _togglePasswordVisibility,
+                  icon: Icon(
+                    _isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: fieldColor,
+                  ),
+                )
+              : null,
+          errorText: errorText,
+          errorStyle: TextStyle(color: Colors.red),
         ),
-        errorText: errorText,
-        errorStyle: TextStyle(color: Colors.red),
+        style: TextStyle(color: Colors.white), // Set text color to white
+        onChanged: (_) {
+          setState(() {
+            _isUsernameFieldFocused = false;
+            _isEmailFieldFocused = false;
+            _isPasswordFieldFocused = false;
+          });
+        },
+        onTap: () {
+          setState(() {
+            _isUsernameFieldFocused = false;
+            _isEmailFieldFocused = false;
+            _isPasswordFieldFocused = false;
+          });
+        },
+        validator: validator,
       ),
-      style: TextStyle(color: Colors.white), // Set text color to white
-      onChanged: (_) {
-        setState(() {
-          _isPasswordFieldFocused = true;
-          _isUsernameFieldFocused = false;
-          _isEmailFieldFocused = false;
-        });
-      },
-      onTap: () {
-        setState(() {
-          _isPasswordFieldFocused = true;
-          _isUsernameFieldFocused = false;
-          _isEmailFieldFocused = false;
-        });
-      },
-      validator: (_) {
-        if (_passwordController.text.isEmpty) {
-          return "Please enter your password";
-        }
-        if (_passwordController.text.length < 6) {
-          return "Password must be at least 6 characters";
-        }
-        if (_passwordController.text.length > 20) {
-          return "Password must be 20 characters or less";
-        }
-        return null;
-      },
     );
+  }
+
+  String? validateUsername(String? value) {
+    if (value!.isEmpty) {
+      return "Please enter your username";
+    }
+    if (value.length > 15) {
+      return "Username must be 15 characters or less";
+    }
+    return null;
+  }
+
+  String? validateEmail(String? value) {
+    if (value!.isEmpty) {
+      return "Please enter your email";
+    }
+    if (!EmailValidator.validate(value)) {
+      return "Please enter a valid email";
+    }
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value!.isEmpty) {
+      return "Please enter your password";
+    }
+    if (value.length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    if (value.length > 20) {
+      return "Password must be 20 characters or less";
+    }
+    return null;
   }
 }
