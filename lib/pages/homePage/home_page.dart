@@ -6,6 +6,7 @@ import 'package:bikerace/pages/popup_menu_pages/RaceLog_Page/RaceLog_page.dart';
 import 'package:bikerace/pages/popup_menu_pages/Settings_Page/Settings_page.dart';
 import 'package:bikerace/pages/solo_page/solo_page.dart';
 import 'package:bikerace/pages/welcome/welcome_page.dart';
+import 'package:bikerace/state_management/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import '../../authentication/Auth.dart';
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   String profilePicture = 'assets/profile/default_profile_picture.png';
   String username = 'GuestUser';
   int trophies = 0;
+  DatabaseHelper databaseHelper = DatabaseHelper();
 
   @override
   void initState() {
@@ -28,11 +30,12 @@ class _HomePageState extends State<HomePage> {
 
   void fetchUserData() async {
     if (Auth.isAuthenticated) {
-      // Simulating fetching user data from backend or database
-      await Future.delayed(Duration(seconds: 1));
+      // Fetch username from the database
+      String fetchedUsername = await databaseHelper.getUsername();
 
+      // Update the state with the fetched username
       setState(() {
-        username = 'BobTheBeast9';
+        username = fetchedUsername;
         trophies = 15;
         profilePicture = 'assets/profile/example_profile_picture.jpg';
       });

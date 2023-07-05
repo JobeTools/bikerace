@@ -1,6 +1,5 @@
 import 'package:bikerace/pages/welcome/welcome_page.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 Row loginBack(BuildContext context) {
   return Row(
@@ -9,9 +8,23 @@ Row loginBack(BuildContext context) {
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            PageTransition(
-              type: PageTransitionType.fade, // Apply fade transition
-              child: const WelcomePage(),
+            PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 200),
+              pageBuilder: (_, __, ___) => const WelcomePage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                var begin = const Offset(-1.0, 0.0); // Slide from left to right
+                var end = Offset.zero;
+                var curve = Curves.easeOut;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              },
             ),
           );
         },

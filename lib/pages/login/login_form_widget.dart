@@ -1,8 +1,12 @@
-import 'dart:async';
 import 'package:bikerace/authentication/Auth.dart';
 import 'package:bikerace/pages/homePage/home_page.dart';
+import 'package:bikerace/state_management/database_helper.dart';
+import 'package:bikerace/state_management/store.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm(BuildContext context, {Key? key}) : super(key: key);
@@ -29,7 +33,7 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void _saveForm() async {
+  void _saveForm() {
     setState(() {
       _isFormSubmitted = true;
       _errorMessage = '';
@@ -39,7 +43,10 @@ class _LoginFormState extends State<LoginForm> {
     if (!isValid) {
       return;
     }
+    _submitForm();
+  }
 
+  Future<void> _submitForm() async {
     setState(() {
       _isLoading = true;
     });
@@ -67,16 +74,27 @@ class _LoginFormState extends State<LoginForm> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    // Simulate asynchronous form submission
-    await Future.delayed(Duration(seconds: 2));
+    final DatabaseHelper databaseHelper = DatabaseHelper();
+    final Database db = await databaseHelper.database;
+    await db.delete('user');
 
-    // Implement actual form submission logic here, such as validating against a database or API
-    // Replace the following logic with your own validation and authentication implementation
+    String userId = '123'; // Replace with the actual user ID
+    store.dispatch(SetAuthenticatedUserAction(userId));
 
-    // Simulate authentication
-    if (email == 'example@gmail.com' && password == 'password') {
-      return true;
-    } else {
+    try {
+      // Simulate asynchronous form submission
+      await Future.delayed(Duration(seconds: 2));
+      // TODO: Implement actual form submission logic here, such as validating against a database or API
+      if (email == 'example@gmail.com' && password == 'password') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      // Handle any exceptions that occurred during form submission
+      setState(() {
+        _errorMessage = 'An error occurred during form submission';
+      });
       return false;
     }
   }
@@ -113,68 +131,78 @@ class _LoginFormState extends State<LoginForm> {
     final double fieldHeight = height * 0.01;
     final double buttonFontSize = height * 0.025;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          autovalidateMode: _isFormSubmitted
-              ? AutovalidateMode.always
-              : AutovalidateMode.disabled,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildEmailField(),
-              SizedBox(height: fieldHeight),
-              _buildPasswordField(),
-              SizedBox(height: fieldHeight),
-              Align(
-                alignment: Alignment.center,
-                child: TextButton(
-                  onPressed: _handleForgotPassword,
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      color: Color.fromARGB(188, 71, 165, 241),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _saveForm,
-                  child: _isLoading
-                      ? CircularProgressIndicator()
-                      : Text(
-                          "Log In",
+    return StoreConnector<AppState, _LoginFormViewModel>(
+        converter: (Store<AppState> store) => _LoginFormViewModel(
+              // Map the relevant state and dispatch actions
+              isDarkMode: store.state.isDarkMode,
+              setAuthenticatedUser: (String userId) =>
+                  store.dispatch(SetAuthenticatedUserAction(userId)),
+              userId: '',
+            ),
+        builder: (BuildContext context, _LoginFormViewModel viewModel) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                autovalidateMode: _isFormSubmitted
+                    ? AutovalidateMode.always
+                    : AutovalidateMode.disabled,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildEmailField(),
+                    SizedBox(height: fieldHeight),
+                    _buildPasswordField(),
+                    SizedBox(height: fieldHeight),
+                    Align(
+                      alignment: Alignment.center,
+                      child: TextButton(
+                        onPressed: _handleForgotPassword,
+                        child: Text(
+                          "Forgot Password?",
                           style: TextStyle(
-                            fontSize: buttonFontSize,
-                            color: Colors.black,
+                            color: Color.fromARGB(188, 71, 165, 241),
                           ),
                         ),
-                  style: ElevatedButton.styleFrom(
-                    shape: StadiumBorder(),
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                    padding: EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 8,
+                      ),
                     ),
-                  ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _saveForm,
+                        child: _isLoading
+                            ? CircularProgressIndicator()
+                            : Text(
+                                "Log In",
+                                style: TextStyle(
+                                  fontSize: buttonFontSize,
+                                  color: Colors.black,
+                                ),
+                              ),
+                        style: ElevatedButton.styleFrom(
+                          shape: StadiumBorder(),
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 8,
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (_errorMessage.isNotEmpty) SizedBox(height: fieldHeight),
+                    if (_errorMessage.isNotEmpty)
+                      Text(
+                        _errorMessage,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                  ],
                 ),
               ),
-              if (_errorMessage.isNotEmpty) SizedBox(height: fieldHeight),
-              if (_errorMessage.isNotEmpty)
-                Text(
-                  _errorMessage,
-                  style: TextStyle(color: Colors.red),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
+        });
   }
 
   Widget _buildEmailField() {
@@ -288,4 +316,16 @@ class FormValidator {
     }
     return null;
   }
+}
+
+class _LoginFormViewModel {
+  final bool isDarkMode;
+  final Function(String) setAuthenticatedUser;
+  final String userId;
+
+  _LoginFormViewModel({
+    required this.isDarkMode,
+    required this.setAuthenticatedUser,
+    required this.userId,
+  });
 }

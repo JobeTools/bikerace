@@ -118,6 +118,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.15"
+  flutter_redux:
+    dependency: "direct main"
+    description:
+      name: flutter_redux
+      sha256: "3b20be9e08d0038e1452fbfa1fdb1ea0a7c3738c997734530b3c6d0bb5fcdbdc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -241,7 +249,7 @@ packages:
     source: hosted
     version: "0.15.4"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "4c3f04bfb64d3efd508d06b41b825542f08122d30bda4933fb95c069d22a4fa3"
@@ -321,7 +329,7 @@ packages:
     source: hosted
     version: "2.0.9"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "8829d8a55c13fc0e37127c29fedf290c102f4e40ae94ada574091fe0ff96c917"
@@ -400,6 +408,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
+  redux:
+    dependency: "direct main"
+    description:
+      name: redux
+      sha256: "1e86ed5b1a9a717922d0a0ca41f9bf49c1a587d50050e9426fc65b14e85ec4d7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
+  redux_thunk:
+    dependency: "direct main"
+    description:
+      name: redux_thunk
+      sha256: ae7c41b1401f59440d6709741979a06b6e29cf7a2b00ec239149727340a35403
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   sanitize_html:
     dependency: transitive
     description:
@@ -421,6 +445,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  sqflite:
+    dependency: "direct main"
+    description:
+      name: sqflite
+      sha256: b4d6710e1200e96845747e37338ea8a819a12b51689a3bcf31eff0003b37a0b9
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.8+4"
+  sqflite_common:
+    dependency: transitive
+    description:
+      name: sqflite_common
+      sha256: "8f7603f3f8f126740bc55c4ca2d1027aab4b74a1267a3e31ce51fe40e3b65b8f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.5+1"
   stack_trace:
     dependency: transitive
     description:
@@ -453,6 +493,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: "5fcbd27688af6082f5abd611af56ee575342c30e87541d0245f7ff99faa02c60"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   term_glyph:
     dependency: transitive
     description:

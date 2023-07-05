@@ -1,6 +1,5 @@
 import 'package:bikerace/pages/homePage/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 Row WelcomeExit(BuildContext context) {
   return Row(
@@ -9,9 +8,23 @@ Row WelcomeExit(BuildContext context) {
         onPressed: () {
           Navigator.pushAndRemoveUntil(
             context,
-            PageTransition(
-              type: PageTransitionType.fade,
-              child: HomePage(),
+            PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 150),
+              pageBuilder: (_, __, ___) => HomePage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                var begin = const Offset(0.0, -1.0); // Slide from up to down
+                var end = Offset.zero;
+                var curve = Curves.easeOut;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              },
             ),
             (route) => false, // Remove all previous routes from the stack
           );

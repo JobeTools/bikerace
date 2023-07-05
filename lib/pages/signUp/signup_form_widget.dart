@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:bikerace/authentication/Auth.dart';
 import 'package:bikerace/pages/homePage/home_page.dart';
+import 'package:bikerace/state_management/database_helper.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm(BuildContext context, {Key? key}) : super(key: key);
@@ -47,8 +49,27 @@ class _SignUpFormState extends State<SignUpForm> {
     setState(() {
       _isLoading = true;
     });
+    // TODO: Implement the logic for form submission
+    // This is where you should handle the back-end/server-side functionality
+    // for user registration.
+
+    // Example steps to be done here:
+    // 1. Extract the input values from the controllers:
+    //    String username = _usernameController.text;
+    //    String email = _emailController.text;
+    //    String password = _passwordController.text;
+    //
+    // 2. Perform any necessary validation or data manipulation.
+    //
+    // 3. Make an HTTP request to the server-side API endpoint responsible
+    //    for user registration. You can use packages like `http` or `dio`
+    //    to make the request and handle the responses.
+    //
+    // 4. Finally, set the state back to loading=false and show any necessary
+
     // Simulate form submission
-    bool isSuccessful = await _performFormSubmission();
+    bool isSuccessful =
+        await _performFormSubmission(); //make this work if successful
     setState(() {
       _isLoading = false;
     });
@@ -67,9 +88,27 @@ class _SignUpFormState extends State<SignUpForm> {
       Timer(
         Duration(seconds: 1),
         () {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomePage()),
+            PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 150),
+              pageBuilder: (_, __, ___) => HomePage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                var begin = const Offset(0.0, -1.0); // Slide from up to down
+                var end = Offset.zero;
+                var curve = Curves.easeOut;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              },
+            ),
+            (route) => false,
           );
         },
       );
@@ -77,19 +116,25 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   Future<bool> _performFormSubmission() async {
-    // TODO: Implement sign-up logic here
-    // You can create a new user account and store the user's information
-    // Return true if the sign-up is successful, false otherwise.
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    // Perform validation and sign-up logic based on your requirements
-    // For example, you can check if the username or email already exists
-    // or if the password meets the required criteria.
-    // Replace this logic with your own sign-up logic
-
     if (username.isNotEmpty && email.isNotEmpty && password.isNotEmpty) {
+      // Create a new instance of the DatabaseHelper
+      final DatabaseHelper databaseHelper = DatabaseHelper();
+
+      // Open the database
+      final Database db = await databaseHelper.database;
+
+      // Delete existing user data
+      await db.delete('user');
+      // Reset other data tables if needed
+
+      // Insert the username into the database for the new user
+      await db.insert('user', {'username': username},
+          conflictAlgorithm: ConflictAlgorithm.replace);
+
       // Simulate a delay to show the loading indicator
       await Future.delayed(Duration(seconds: 2));
       return true;
